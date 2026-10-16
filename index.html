@@ -1,0 +1,140 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Placar TikTok LIVE</title>
+<style>
+body {
+  margin: 0;
+  padding: 20px;
+  background: #101323;
+  color: white;
+  font-family: Arial, sans-serif;
+  text-align: center;
+}
+h1 { color: #ff4d9d; }
+.times {
+  display: flex;
+  gap: 12px;
+}
+.time {
+  flex: 1;
+  padding: 15px 5px;
+  border-radius: 18px;
+  background: #222943;
+}
+.pontos {
+  font-size: 48px;
+  font-weight: bold;
+  margin: 15px;
+}
+button {
+  padding: 13px;
+  margin: 5px 0;
+  width: 100%;
+  border: 0;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: bold;
+}
+.rosa { background: #ff4d9d; color: white; }
+.remover { background: #424b66; color: white; }
+.controles { margin-top: 25px; }
+#tempo { font-size: 52px; margin: 15px; }
+.iniciar { background: #28c76f; color: #101323; }
+.resetar { background: #424b66; color: white; }
+</style>
+</head>
+<body>
+<h1>🌹 BATALHA LIVE 🌹</h1>
+<p>Placar de rosas • 3 minutos</p>
+
+<div class="times">
+  <div class="time">
+    <h2>🔵 TIME AZUL</h2>
+    <div class="pontos" id="p1">0</div>
+    <button class="rosa" onclick="somar(1)">🌹 +1 ROSA</button>
+    <button class="remover" onclick="tirar(1)">−1 ponto</button>
+  </div>
+  <div class="time">
+    <h2>🔴 TIME VERMELHO</h2>
+    <div class="pontos" id="p2">0</div>
+    <button class="rosa" onclick="somar(2)">🌹 +1 ROSA</button>
+    <button class="remover" onclick="tirar(2)">−1 ponto</button>
+  </div>
+</div>
+
+<div class="controles">
+  <div id="tempo">03:00</div>
+  <button class="iniciar" onclick="iniciar()">▶ INICIAR / CONTINUAR</button>
+  <button class="resetar" onclick="pausar()">⏸ PAUSAR</button>
+  <button class="resetar" onclick="reiniciar()">🔄 NOVA BATALHA</button>
+  <h2 id="resultado">Preparados?</h2>
+</div>
+
+<script>
+let pontos = [0, 0];
+let segundos = 180;
+let intervalo = null;
+
+function atualizar() {
+  document.getElementById('p1').textContent = pontos[0];
+  document.getElementById('p2').textContent = pontos[1];
+}
+
+function somar(time) {
+  if (segundos > 0) {
+    pontos[time - 1]++;
+    atualizar();
+  }
+}
+
+function tirar(time) {
+  pontos[time - 1] = Math.max(0, pontos[time - 1] - 1);
+  atualizar();
+}
+
+function mostrarTempo() {
+  let m = Math.floor(segundos / 60);
+  let s = segundos % 60;
+  document.getElementById('tempo').textContent =
+    String(m).padStart(2, '0') + ':' +
+    String(s).padStart(2, '0');
+}
+
+function iniciar() {
+  if (intervalo || segundos <= 0) return;
+  document.getElementById('resultado').textContent = 'Valendo! 🔥';
+  intervalo = setInterval(() => {
+    segundos--;
+    mostrarTempo();
+    if (segundos <= 0) {
+      pausar();
+      document.getElementById('resultado').textContent =
+        pontos[0] === pontos[1] ? '🤝 EMPATE!' :
+        pontos[0] > pontos[1] ? '🏆 TIME AZUL VENCEU!' :
+        '🏆 TIME VERMELHO VENCEU!';
+    }
+  }, 1000);
+}
+
+function pausar() {
+  clearInterval(intervalo);
+  intervalo = null;
+}
+
+function reiniciar() {
+  pausar();
+  pontos = [0, 0];
+  segundos = 180;
+  atualizar();
+  mostrarTempo();
+  document.getElementById('resultado').textContent = 'Preparados?';
+}
+
+mostrarTempo();
+</script>
+</body>
+</html>
